@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  
+</head>
+<body>
+    <ul class="todos">
+        <li>You need to give your browser access to your microphone!</li>
+        <li class="new-todo-hint">Say 'new *YOUR TODO*' (example: 'new subscribe by newsletter')</li>
+      </ul>
+      <p class="heard"></p>
+      <script>
+        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+// get html elements
+const todoList = document.querySelector('ul.todos');
+const heard = document.querySelector('.heard');
+
+// setup SpeechRecognation
+const recognition = new SpeechRecognition();
+recognition.interimResults = true;
+recognition.lang = 'en-US';
+  
+// waiting for speech results
+recognition.addEventListener('result', event => {
+  const transcript = event.results[0][0].transcript;
+      
+  // check if the voice input has ended
+  if(event.results[0].isFinal) {
+    heard.innerHTML = 'I understood: ' + transcript;
+    
+    // check if the input starts with 'new'
+    if(transcript.indexOf('new') == 0) {
+      let newTodo = document.createElement('li');
+      
+      let todo = transcript.substring(3);
+      newTodo.innerHTML = todo;
+      
+      todoList.append(newTodo);
+    }
+  }
+});
+
+recognition.addEventListener('end', recognition.start);
+recognition.start();
+    </script>
+</body>
+</html>
